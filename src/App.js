@@ -3,24 +3,34 @@ import { useState } from 'react';
 
 function App() {
   const [file, setFile] = useState(null);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
+    setResult(null);   //set result on the new file selection
   };
 
   const handleUpload = async () => {
     if (!file) return alert("Please select a PDF file");
 
+    setLoading(true);
     const formData = new FormData();
     formData.append('pdf', file);
 
+    try{
     const response = await fetch('http://localhost:8000/upload/', {
       method: 'POST',
       body: formData,
     });
 
     const data = await response.json();
-    alert(`Extracted text:\n${data.text}`);
+    setResult(data);
+  }catch(error){
+    alert('Error uploading files');
+  }finally{
+    setLoading(false)
+  }  
   };
 
   return (
@@ -54,6 +64,7 @@ function App() {
         <br />
         <button
           onClick={handleUpload}
+          disabled={loading}
           style={{
             padding: '10px 20px',
             fontSize: '16px',
@@ -63,8 +74,24 @@ function App() {
             cursor: 'pointer'
           }}
         >
-          Upload and Parse
+          {loading ? 'Uploading...' : 'Upload and Parse'}
         </button>
+
+          {result && (
+            <div style={{
+              marginTop: '30px',
+              padding: '20px',
+              backgroundColor: '#fff',
+              borderRadius: '8px',
+              color: '#333',
+              textAlign: 'left'
+            }}> 
+            <h3>Resume Grade: {result.grade}</h3>
+            <pre style={{ whiteSpace: 'pre-wrap'}}>{result.text}</pre>
+
+            </div>
+          )}
+
       </header>
     </div>
   );
