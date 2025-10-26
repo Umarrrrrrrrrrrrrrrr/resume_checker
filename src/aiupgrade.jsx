@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function NextPage() {
+function aiupgrade() {
   const navigate = useNavigate();
 
   return (
@@ -11,9 +11,9 @@ function NextPage() {
       <button onClick={() => navigate('/')}>
         Go Back to Home
       </button>
-      <button onClick={() => navigate('aiupgrade')}>subscribe</button>
+      <button onClick={() => navigate('upgrade-cv')}>subscribe</button>
     </div>
   );
 }
 
-export default NextPage;
+export default aiupgrade;
